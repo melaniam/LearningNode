@@ -20,6 +20,4 @@ module.exports = (request, response) => {
         // add catch all error handler
         sendResponse(response, "Not Found", 404);
     }
-
-    
 }

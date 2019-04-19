@@ -1,11 +1,13 @@
 const http = require('http');
 const url = require('url');
-const handler = require('./handler');
 const utils = require('./utils');
 
+const defaultHandler = require('./handler');
+const loginHandler = require('./login');
+
 const routes = {
-    '/': handler,
-    '/login': handler
+    '/': defaultHandler,
+    '/login': loginHandler
 };
 
 const app = http.createServer((request, response) => {

@@ -1,14 +1,34 @@
+const jwt = require('jsonwebtoken');
 const utils = require('./utils');
+const config = require('./config');
 
 // TODO: implement login here
 const actions = {
-    'GET': (request, response) => {
-        utils.sendResponse(response, 'Hello World!', 200, {'Content-Type': 'text/plain'});
-    },
     'POST': (request, response) => {
         utils.collectData(request, formattedData => {
-            // do smth with formattedData
-            utils.sendResponse(response, 'Success', 200, {'Content-Type': 'text/plain'});
+            const { username, password } = formattedData;
+            if (!username || !password) {
+                utils.sendResponse(response, "Username or password missing", 400, {'Content-Type': 'text/plain'});
+                return;
+            }
+
+            const { adminUser } = utils;
+            if (username !== adminUser.username || password !== adminUser.password){
+                utils.sendResponse(response, "Username or password incorrect", 401, {'Content-Type': 'text/plain'});
+                return;
+            }
+            
+            let token = jwt.sign({username: username},
+                config.secret,
+                { expiresIn: '24h' } // expires in 24 hours
+            );
+            
+            const responseObject = {
+                message: 'Authentication successful',
+                token
+            };
+
+            utils.sendResponse(response, JSON.stringify(responseObject), 200, {'Content-Type': 'application/json'});
         });
     }
 }
@@ -21,6 +41,4 @@ module.exports = (request, response) => {
         // add catch all error handler
         sendResponse(response, "Not Found", 404);
     }
-
-    
 }

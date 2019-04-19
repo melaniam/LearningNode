@@ -4,13 +4,17 @@ exports.sendResponse = (response, data, statusCode, headers) => {
 }
 
 exports.collectData = (request, callback) => {
-    const data = [];
+    let data = '';
     request.on('data', chunk => {
-        data.push(chunk);
+        data += chunk;
     });
 
     request.on('end', () => {
-        data = data.concat.toString();
-        callback(data);
+        callback(JSON.parse(data));
     });
+}
+
+exports.adminUser = {
+    username: "mar",
+    password: "1234"
 }
